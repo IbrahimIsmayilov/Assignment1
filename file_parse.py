@@ -1,0 +1,2 @@
+# 1. Have program identify the 4 wheel components and what seperates them (newline characters)
+# 2. For every wheel componenet, there are 3 sections. Each section ends with a checksum padding and a new one begins after up until the third section. Within each of these 3 main sections, each section has a preset amount of mini sections.
