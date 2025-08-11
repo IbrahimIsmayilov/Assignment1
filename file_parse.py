@@ -6,16 +6,27 @@
 #           - Returning a boolean value if the cartidges have the correct data and a string otherwise that indicates where the error is located, in terms of which section or mini-entry.  
 
 # 1
-    # 1. Read the file in python 
-    # 2. Store the data in a variable
-    # 4. Return the variable
+    # 1. Create a list variable to store the seperate wheel data components
+    # 2. Read the file in python 
+    # 3. Seperate the wheel componenets into 4 seperate strings with 4 different wheel componenets
+    # 4. Within these 4 strings, replace them with lists instead where within each list, all pieces of data within each wheel componenent is a seperate element. 
+    # 5. Return the list
 
 
 
 # Time Complexity: O(1), constant time
+import re
 def read_wheel_data(filename: str) -> str:
     with open(filename, 'r') as wheel_data:
-        file_contents = wheel_data.read()
+        file_contents = re.split(r'\n\s*\n', wheel_data.read())
+        for idx in range(len(file_contents)):
+            new_wheel_data = ''
+            for character_idx in range(len(file_contents[idx])):
+                if file_contents[idx][character_idx] != ' ' and file_contents[idx][character_idx] != '\n':
+                    print(file_contents[idx][character_idx])
+                    new_wheel_data += file_contents[idx][character_idx]
+            file_contents[idx] = new_wheel_data
+
 
 
     return file_contents
@@ -39,13 +50,18 @@ def get_checksum(lst: list) -> bool:
     return sum % 256 == 0
 
 # 3
-    # 1. Loop 3 times for each of the 3 main section that contain a checksum padding
-    # 2. Create a new empty list within each 3 loops to contain the list that will be evaulated for the checksum
-    # 3. Within each of the 3 loops, create an iteration that iterates n amount of times, where n is the element that precedes other values before the creation of the iteration. 
-    # 4. 
+    # 1. Create a section variable that keeps track of which section I am in. 
+    # 2. Loop 3 times for each of the 3 main section that contain a checksum padding
+    # 3. Create a new empty list within each 3 loops to contain the list that will be evaulated for the checksum
+    # 4. Within each of the 3 loops, create an iteration that iterates n amount of times, where n is the element that precedes other values before the creation of the iteration. 
+    # 5. At the end of each main iteration, run the get_checksum() function with the list as arguement. If it returns false, break the loop, else continue.
+    # 6. Return a tuple in the format of (whether or not the program finished (bool value), section last checked value (int)) if checksum returns false
 
 
-
-def parse_file(
+def parse_file(file_contents: str) -> tuple:
+    section_num = 0
+    while section_num < 4:
+        section_num += 1
+        
                
     
