@@ -1,55 +1,58 @@
-# 1. Develop a function to read file from given file and return a list with seperate Wheel entries
+# 1. Develop a function to read file from given file and return the contents
+# 2. Develop a function to parse the contents of the file and place them in seperate elements
+
+# 1. 
+    # 1. Reads the file and returns the contents stored in a variable
 
 
-# # 1
+# Time Complexity: O(N), where N is the amount of characters in the file or the length of the file. Linear time complexity
+def read_file(filename: str) -> list:
+    with open(filename) as file:
+        raw_wheel_data = file.read()
 
-#     # 1. Open and read the file
-#     # 2. Split different wheel datagrams into different elements and store them in a list. This can be achieved through importing the RegEx module and using the built in split function. 
-#     # 3. Iterate through each element and update with an element that does not contain irrelevant whitespace or newline characters
-#     # 4. Return the list
+    return raw_wheel_data
 
-
-
-# # Time Complexity: O(2N), where N = the length of the given file. Linear time complexity. The main contributors are the .read() function and iterating through all of the characters in the file to remove whitespace and newline characters. 
-# import re
-# def read_file_data(filename: str) -> str:
-
-    
-
-# print(read_wheel_data('colleague-file.log'))
-    
-# # 2
-#     # 1. Create a sum variable
-#     # 2. Iterate through the list and check if it is a digit. If so, add the raw value to the sum variable. Otherwise, add the number associated with the unicode character to the sum variable
-#     # 3. Return whether or not the checksum evaluates to 0 with a Bool value
-
-# # Time Complexity: O(N), where N is the length of the given list. Linear time complexity
-# def get_checksum(lst: list) -> bool:
-#     sum = 0
-#     for value in lst:
-#         if value.isdigit():
-#             sum += value
-#         else:
-#             sum += ord(value)
-
-#     return sum % 256 == 0
-
-# # 3
-#     # 1. Create a section variable that keeps track of which of the 3 sections of the wheel component the function is iterating through
-#     # 2. Loop 3 times for each of the 3 main section that contain a checksum padding
-    
-#     # 3. Within each of the 3 loops, create an iteration that iterates n amount of times, where n is the element that precedes other values before the creation of the iteration. 
-#     # 5. At the end of each main iteration, run the get_checksum() function with the list as arguement. If it returns false, break the loop, else continue.
-#     # 6. Return a tuple in the format of (whether or not the program finished (bool value), section last checked value (int)) if checksum returns false
+file_contents = read_file('colleague-file.log')
 
 
-# def parse_file(file_contents: str) -> tuple:
-#     for wheel_data in file_contents:
-#         for outer_section_num  in range(1, 4):
-#             pass
+# 2. 
+    # 1. Create variables that store both letters and numbers to be used when checking characters of the file's contents
+    # 2. Create a new list that will store all wheel entries seperately and return it at the end
+    # 3. Create a new list for wheel entries and a variable to differentiate between seperate digits and larger numbers
+    # 4. Iterate through the contents of the file and seperate the wheel entries that will only contain relevant characters (no whitespace or newline)
+    # 5. Return the list containing all the entries 
 
-        
+
+# Time Complexity: O(N), where N is the amount of characters in the file or the length of the file. Linear time complexity
+import string
+def parse_file(raw_wheel_data: str) -> list:
+    numbers = '1234567890'
+    letters = string.ascii_letters
+
+    all_wheel_entries = []
+    wheel_entry = []
+    wheel_num = ''
+
+    for idx in range(len(raw_wheel_data)):
+        if raw_wheel_data[idx:idx + 2] == '\n\n' and len(wheel_entry) != 0:
+            all_wheel_entries.append(wheel_entry)
+            wheel_entry = []
+
+        if raw_wheel_data[idx] in numbers:
+            wheel_num += raw_wheel_data[idx]
+            if idx != len(raw_wheel_data) - 1 and raw_wheel_data[idx + 1] not in numbers:
+                wheel_entry.append(wheel_num)
+                wheel_num = ''
+
+        elif raw_wheel_data[idx] in letters:
+            wheel_entry.append(raw_wheel_data[idx])
+
+    all_wheel_entries.append(wheel_entry)
+
+    return all_wheel_entries
             
+
+print(parse_file(file_contents))  # [['9', '37', '0', '0', '0', '0', '0', '0', '210', '8', '2', '0', '0', '8', '13', '4', '0', '0', '6', 'W', 'h', 'e', 'e', 'l', '1', '6', 'O', 't', 't', 'a', 'w', 'a', '6', 'C', 'a', 'n', 'a', 'd', 'a', '45', '4', '1', '1', '1', '3', '9', '8', '2', '4', '8', '1', '5', '3', '5', '1', '200'], ['9', '37', '0', '0', '0', '0', '0', '0', '210', '8', '2', '0', '0', '8', '13', '4', '0', '0', '6', 'W', 'h', 'e', 'e', 'l', '2', '6', 'O', 't', 't', 'a', 'w', 'a', '6', 'C', 'a', 'n', 'a', 'd', 'a', '44', '4', '1', '1', '1', '4', '9', '8', '2', '4', '8', '1', '5', '3', '5', '1', '199'], ['9', '37', '0', '0', '0', '0', '0', '0', '210', '8', '2', '0', '0', '8', '13', '4', '0', '0', '6', 'W', 'h', 'e', 'e', 'l', '3', '6', 'O', 't', 't', 'a', 'w', 'a', '6', 'C', 'a', 'n', 'a', 'd', 'a', '43', '4', '1', '1', '1', '5', '9', '8', '2', '4', '8', '1', '5', '3', '5', '1', '198'], ['9', '37', '0', '0', '0', '0', '0', '0', '210', '8', '2', '0', '0', '8', '13', '4', '0', '0', '6', 'W', 'h', 'e', 'e', 'l', '4', '6', 'O', 't', 't', 'a', 'w', 'a', '6', 'C', 'a', 'n', 'a', 'd', 'a', '42', '4', '1', '1', '1', '6', '9', '8', '2', '4', '8', '1', '5', '3', '5', '1']]
             
         
                
