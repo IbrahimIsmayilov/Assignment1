@@ -18,7 +18,7 @@ file_contents = read_file('colleague-file.log')
 # 2. 
     # 1. Create variables that store both letters and numbers to be used when checking characters of the file's contents
     # 2. Create a new list that will store all wheel entries seperately and return it at the end
-    # 3. Create a new list for wheel entries and a variable to differentiate between seperate digits and larger numbers
+    # 3. Create a new list for wheel entries and a variable to differentiate between single digits and larger numbers
     # 4. Iterate through the contents of the file and seperate the wheel entries that will only contain relevant characters (no whitespace or newline)
     # 5. Return the list containing all the entries 
 
@@ -34,20 +34,21 @@ def parse_file(raw_wheel_data: str) -> list:
     wheel_num = ''
 
     for idx in range(len(raw_wheel_data)):
-        if raw_wheel_data[idx:idx + 2] == '\n\n' and len(wheel_entry) != 0:
-            all_wheel_entries.append(wheel_entry)
-            wheel_entry = []
 
-        if raw_wheel_data[idx] in numbers:
+
+        if raw_wheel_data[idx] in letters:
+            wheel_entry.append(raw_wheel_data[idx])
+
+        elif raw_wheel_data[idx] in numbers:
             wheel_num += raw_wheel_data[idx]
-            if idx != len(raw_wheel_data) - 1 and raw_wheel_data[idx + 1] not in numbers:
+            if idx == len(raw_wheel_data) - 1 or raw_wheel_data[idx + 1] not in numbers:
                 wheel_entry.append(wheel_num)
                 wheel_num = ''
 
-        elif raw_wheel_data[idx] in letters:
-            wheel_entry.append(raw_wheel_data[idx])
 
-    all_wheel_entries.append(wheel_entry)
+        if raw_wheel_data[idx:idx + 2] == '\n\n' or idx == len(raw_wheel_data) - 1:
+            all_wheel_entries.append(wheel_entry)
+            wheel_entry = []
 
     return all_wheel_entries
             
