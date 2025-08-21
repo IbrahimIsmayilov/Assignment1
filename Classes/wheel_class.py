@@ -4,9 +4,12 @@
 
 class WheelData:
     def __init__(self, parsed_data):
-        self.parsed_data = parsed_data
+        self.header = parsed_data[:10]
+        self.regions = parsed_data[10:]
         self.wheel_id = 0
+        self.faulty_region = None
         self.valid = True
+
     
     #  1. Create a variable to keep track of the region's sum
     #  2. Iterate through all digits in the wheel section and differentiate between letters and numbers. Add the result to the sum variable
@@ -23,5 +26,10 @@ class WheelData:
                 sum += ord(value)
 
         return sum % 256 == 0
+    
+    #  1. 
+    def analyze_header(header_section: list): ...
+
+        
 
 print(WheelData.get_checksum(['9', '37', '0', '0', '0', '0', '0', '0', '210']))  # True
