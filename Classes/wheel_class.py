@@ -6,7 +6,7 @@ class WheelData:
     def __init__(self, parsed_data):
 
         self.all_data = parsed_data
-        self.header_data = parsed_data[:9]
+        self.header_data = parsed_data[:self.all_data[0]]
 
         self.region_locations = {}
 
@@ -35,23 +35,21 @@ class WheelData:
     #  1. Check if the checksum of the header section yields 0, proving it is a valid piece of data
     #  2. Iterate through data element in the header section and assign the locations at which every region starts and ends to the correct region
     def analyze_header(self): 
+
         if self.yield_checksum(self.header_data) == False:
             self.valid_data = False
+
         else:
-            begin_idx = 9
-            region_num = 1
-            for idx in range(1, len(self.header_data) - 1):
-                end_idx = len(self.all_data)
-                if self.header_data[idx] != '0':
-                    end_idx = self.header_data[idx]
-                    self.region_locations[region_num] = (begin_idx, end_idx)
-                    begin_idx = self.header_data[idx]
-                    region_num += 1
-            self.region_locations[region_num] = (begin_idx, len(self.all_data))
+            for idx in range(len(self.header_data) - 1):
+                if self.header_data[idx] != 0:
+                    if idx != 0:
+                        self.region_locations[idx][1] = self.header_data[idx]
+                    self.region_locations[idx + 1] = [self.header_data[idx], len(self.all_data)]  
+
 
         return self.region_locations
 
 
 new_wheel = WheelData([9, 37, 0, 0, 0, 0, 0, 0, 210, 8, 2, 0, 0, 8, 13, 4, 0, 0, 6, 'W', 'h', 'e', 'e', 'l', 1, 6, 'O', 't', 't', 'a', 'w', 'a', 6, 'C', 'a', 'n', 'a', 'd', 'a', 45, 4, 1, 1, 1, 3, 9, 8, 2, 4, 8, 1, 5, 3, 5, 1, 200])
-print(new_wheel.analyze_header())
-print(new_wheel.yield_checksum(new_wheel.header_data))
+print(new_wheel.analyze_header())  # {1: [9, 37], 2: [37, 56]}
+print(new_wheel.yield_checksum(new_wheel.header_data))  # True
