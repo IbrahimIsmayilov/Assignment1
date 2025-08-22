@@ -5,8 +5,8 @@
 class WheelData:
     def __init__(self, parsed_data):
 
-        self.header_data = parsed_data[:10]
-        self.regions_data = parsed_data[10:]
+        self.header_data = parsed_data[:9]
+        self.regions_data = parsed_data[9:]
 
         self.region_locations = {}
 
@@ -44,8 +44,10 @@ class WheelData:
                     end_idx = self.header_data[idx]
                     self.region_locations[idx] = (begin_idx, end_idx)
                     begin_idx = self.header_data[idx]
-                    
 
-new_wheel = WheelData(['9', '37  0', '0', '0', '0', '0', '0', '210', '8', '2', '0', '0', '8', '13  4', '0', '0', '', '6', 'W', 'h', 'e', 'e', 'l', '1', '6', 'O', '', 't', 't', 'a', 'w', 'a', '6', 'C', 'a', 'n', ' a', 'd', 'a', '45  4', '1', '1', '1', '3', '  9', '8', '2', '4', '8', '1', '5', '3', '5', '1', '200'])
+        return self.region_locations
+
+
+new_wheel = WheelData(['9', '37', '0', '0', '0', '0', '0', '0', '210', '8', '2', '0', '0', '8', '13', '4', '0', '0', '6', 'W', 'h', 'e', 'e', 'l', '1', '6', 'O', 't', 't', 'a', 'w', 'a', '6', 'C', 'a', 'n', 'a', 'd', 'a', '45', '4', '1', '1', '1', '3', '9', '8', '2', '4', '8', '1', '5', '3', '5', '1', '200'])
 print(new_wheel.analyze_header())
-print(new_wheel.yield_checksum(new_wheel.regions_data))
+print(new_wheel.yield_checksum(new_wheel.header_data))
