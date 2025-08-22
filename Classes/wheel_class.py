@@ -5,8 +5,8 @@
 class WheelData:
     def __init__(self, parsed_data):
 
+        self.all_data = parsed_data
         self.header_data = parsed_data[:9]
-        self.regions_data = parsed_data[9:]
 
         self.region_locations = {}
 
@@ -24,10 +24,11 @@ class WheelData:
     def yield_checksum(self, wheel_section: list) -> bool:
         sum = 0
         for value in wheel_section:
-            if value.isdigit():
-                sum += int(value)
-            else:
+            if isinstance(value, str):
                 sum += ord(value)
+            else:
+                sum += value
+                
 
         return sum % 256 == 0
     
@@ -38,16 +39,19 @@ class WheelData:
             self.valid_data = False
         else:
             begin_idx = 9
-            for idx in range(1, len(self.header_data)):
-                end_idx = len(self.regions_data)
+            region_num = 1
+            for idx in range(1, len(self.header_data) - 1):
+                end_idx = len(self.all_data)
                 if self.header_data[idx] != '0':
                     end_idx = self.header_data[idx]
-                    self.region_locations[idx] = (begin_idx, end_idx)
+                    self.region_locations[region_num] = (begin_idx, end_idx)
                     begin_idx = self.header_data[idx]
+                    region_num += 1
+            self.region_locations[region_num] = (begin_idx, len(self.all_data))
 
         return self.region_locations
 
 
-new_wheel = WheelData(['9', '37', '0', '0', '0', '0', '0', '0', '210', '8', '2', '0', '0', '8', '13', '4', '0', '0', '6', 'W', 'h', 'e', 'e', 'l', '1', '6', 'O', 't', 't', 'a', 'w', 'a', '6', 'C', 'a', 'n', 'a', 'd', 'a', '45', '4', '1', '1', '1', '3', '9', '8', '2', '4', '8', '1', '5', '3', '5', '1', '200'])
+new_wheel = WheelData([9, 37, 0, 0, 0, 0, 0, 0, 210, 8, 2, 0, 0, 8, 13, 4, 0, 0, 6, 'W', 'h', 'e', 'e', 'l', 1, 6, 'O', 't', 't', 'a', 'w', 'a', 6, 'C', 'a', 'n', 'a', 'd', 'a', 45, 4, 1, 1, 1, 3, 9, 8, 2, 4, 8, 1, 5, 3, 5, 1, 200])
 print(new_wheel.analyze_header())
 print(new_wheel.yield_checksum(new_wheel.header_data))
