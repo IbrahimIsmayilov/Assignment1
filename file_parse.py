@@ -8,7 +8,7 @@
 
 
 # Time Complexity: O(N), where N is the amount of characters in the file or the length of the file contents. Linear time complexity
-def read_file(filename: str) -> list:
+def read_file(filename: str) -> list[str]:
     """"
     Reads the contents of the file and stores it in a variable in string format. Returns the variable to the user
     """
@@ -30,7 +30,7 @@ file_contents = read_file('colleague-file.log')
 
 # Time Complexity: O(3N), where N is the amount of characters in the file or the length of the contents of the file data given. Linear time complexity
 import re
-def parse_file(raw_wheel_data: str) -> list:
+def parse_file(raw_wheel_data: str) -> list[list]:
     """"
     Seperates wheel entries in the file's contents and seperates each data piece by distinguishing from irrelevant characters. Returns the wheel entries as a list of seperate wheel entry lists
     """

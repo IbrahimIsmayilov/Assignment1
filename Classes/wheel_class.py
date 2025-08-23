@@ -39,8 +39,8 @@ class WheelData:
         return sum % 256 == 0
     
 
-    #  1. Check if the checksum of the header section yields 0, proving it is a valid piece of data. If it is provdn valid, continue. Else, end the function as faulty header data means the whole datagram should not be checked further
-    #  2. Iterate through data element in the header section and assign the locations at which every region starts and ends to the correct region by keeping track of the last region checked. One region's beginning signals the previous region's end. All regions are intially presumed to end at the end of the datagram in case no other regions are detected. 
+    #  1. Check if the checksum of the header section yields 0, proving it is a valid piece of data. If it is proven valid, continue. Else, end the function as faulty header data means the whole datagram should not be checked further
+    #  2. Iterate through data element in the header section and assign the locations at which every region starts and ends to the correct region by keeping track of the last region checked. One region's beginning signals the previous region's end. All regions are intially presumed to end at the end of the datagram in case no other regions are detected. Create a condition to check whether or not the iteration is at the first index to avoid any errors when checking for the last region's end. 
     
     #  Time Complexity: O(2N), where N is the length of the header section's contents in the checked wheel entry. Linear Time Complexity
     def analyze_header(self): 
@@ -55,8 +55,11 @@ class WheelData:
             for idx in range(len(self.header_data) - 1):
                 if self.header_data[idx] != 0:
                     if idx != 0:
-                        self.region_locations[last_region_checked][1] = self.header_data[idx]
-                    self.region_locations[idx + 1] = [self.header_data[idx], len(self.all_data)]  
+                        self.region_locations[last_region_checked][1] = self.header_data[idx] + (last_region_checked + idx) + 1
+                        self.region_locations[idx + 1] = [self.region_locations[last_region_checked][1], len(self.all_data)]  
+                    else:
+                        self.region_locations[idx + 1] = [self.header_data[idx], len(self.all_data)]  
+
                     last_region_checked = idx + 1
     
 
@@ -77,7 +80,25 @@ class WheelData:
         if len(self.faulty_regions) > 0:
             self.valid_data = False
 
-    def get_wheel_id(): ...
+    #  1. Check if the wheel entry has the first region. If so, continue. Else, the function ends there and nothing is updated.
+    #  2. Store the first region's data in a new variable to avoid confusion
+    #  3. Find the second mini entry and check if the elements making up the word Wheel exist. If so, update the wheel id of the instance with the number proceeding. Else, Label first region as faulty by adding to the faulty regions list and update the validity of the instance accordingly
+    def get_wheel_id(self): 
+        "Get and store the id of the wheel component by analyzing first region"
+        if 1 in self.region_locations:
+            region = self.region_locations[1]
+            first_region_data = self.all_data[region[0]:region[1]]
+            
+            second_mini_entry_begin = first_region_data[first_region_data[0]] + 1
+            second_mini_entry_end = second_mini_entry_begin + first_region_data[second_mini_entry_begin] 
+            if first_region_data[second_mini_entry_begin + 1:second_mini_entry_end - 1] == ['W', 'h', 'e', 'e', 'l']:
+                self.wheel_id = first_region_data[second_mini_entry_end]
+            else:
+                self.faulty_regions.append(1)
+                self.valid_data = False
+            
+                        
+
 
    
     def display_mini_entries(self): ...
@@ -93,3 +114,6 @@ print(new_wheel.region_locations)  # {1: [9, 37], 2: [37, 56]}
 
 new_wheel.analyze_regions()
 print(new_wheel.faulty_regions)  # True
+
+new_wheel.get_wheel_id()
+print(new_wheel.wheel_id)
