@@ -55,7 +55,7 @@ class WheelData:
             for idx in range(len(self.header_data) - 1):
                 if self.header_data[idx] != 0:
                     if idx != 0:
-                        self.region_locations[last_region_checked][1] = self.header_data[idx] + (last_region_checked + idx) + 1
+                        self.region_locations[last_region_checked][1] = self.header_data[idx]
                         self.region_locations[idx + 1] = [self.region_locations[last_region_checked][1], len(self.all_data)]  
                     else:
                         self.region_locations[idx + 1] = [self.header_data[idx], len(self.all_data)]  
@@ -72,27 +72,39 @@ class WheelData:
         """
         Check whether or not the checksum yields 0 all regions of the datagram. Keep track of which regions have invalid data
         """
-        for region in self.region_locations:
-            region = self.region_locations[region]
-            if self.yield_checksum(self.all_data[region[0]:region[1]]) != True:
-                self.faulty_regions.append(region)
+        for region_name in self.region_locations:
+            region_data = self.region_locations[region_name]
+            if self.yield_checksum(self.all_data[region_data[0]:region_data[1]]) != True:
+                self.faulty_regions.append(region_name)
 
         if len(self.faulty_regions) > 0:
             self.valid_data = False
 
-    #  1. Check if the wheel entry has the first region. If so, continue. Else, the function ends there and nothing is updated.
+    #  1. Check if the wheel entry has the first region by only checking the first insertion in the dictionary. If so, continue. Else, the function ends there and nothing is updated
     #  2. Store the first region's data in a new variable to avoid confusion
     #  3. Find the second mini entry and check if the elements making up the word Wheel exist. If so, update the wheel id of the instance with the number proceeding. Else, Label first region as faulty by adding to the faulty regions list and update the validity of the instance accordingly
-    def get_wheel_id(self): 
-        "Get and store the id of the wheel component by analyzing first region"
-        if 1 in self.region_locations:
+    #  4. Also change the Wheel ID to its corresponding ASCII character by converting it to a string
+
+    #  Time Complexity: O(1), Constant Time Complexity
+    def analyze_wheel_id(self): 
+        """
+        Get and store the id of the wheel component by analyzing first region. Replace the ASCII character wheel ID with its numeric value
+        """
+        
+        first_key = next(iter(self.region_locations.keys()))
+
+        if first_key == 1:
             region = self.region_locations[1]
             first_region_data = self.all_data[region[0]:region[1]]
             
-            second_mini_entry_begin = first_region_data[first_region_data[0]] + 1
+            second_mini_entry_begin = first_region_data[0] + 1
             second_mini_entry_end = second_mini_entry_begin + first_region_data[second_mini_entry_begin] 
-            if first_region_data[second_mini_entry_begin + 1:second_mini_entry_end - 1] == ['W', 'h', 'e', 'e', 'l']:
-                self.wheel_id = first_region_data[second_mini_entry_end]
+
+            if first_region_data[second_mini_entry_begin + 1:second_mini_entry_end] == ['W', 'h', 'e', 'e', 'l']:
+                self.wheel_id = str(first_region_data[second_mini_entry_end])
+                wheel_id_idx = region[0] + second_mini_entry_end
+                self.all_data[wheel_id_idx] = ord(self.wheel_id)
+                
             else:
                 self.faulty_regions.append(1)
                 self.valid_data = False
@@ -106,14 +118,17 @@ class WheelData:
 
 
 
-new_wheel = WheelData([9, 37, 0, 0, 0, 0, 0, 0, 210, 8, 2, 0, 0, 8, 13, 4, 0, 0, 6, 'W', 'h', 'e', 'e', 'l', 1, 6, 'O', 't', 't', 'a', 'w', 'a', 6, 'C', 'a', 'n', 'a', 'd', 'a', 45, 4, 1, 1, 1, 3, 9, 8, 2, 4, 8, 1, 5, 3, 5, 1, 200])
+new_wheel = WheelData([9, 40, 0, 0, 0, 0, 0, 0, 207, 8, 2, 0, 0, 8, 13, 4, 0, 0, 6, 'W', 'h', 'e', 'e', 'l', 1, 6, 'O', 't', 't', 'a', 'w', 'a', 6, 'C', 'a', 'n', 'a', 'd', 'a', 45, 4, 1, 1, 1, 3, 9, 8, 2, 4, 8, 1, 5, 3, 5, 1, 200])
 print(new_wheel.yield_checksum(new_wheel.header_data))  # True
 
 new_wheel.analyze_header() 
-print(new_wheel.region_locations)  # {1: [9, 37], 2: [37, 56]}
+print(new_wheel.region_locations)  # {1: [9, 40], 2: [40, 56]}
 
 new_wheel.analyze_regions()
-print(new_wheel.faulty_regions)  # True
+print(new_wheel.faulty_regions)  # []
 
-new_wheel.get_wheel_id()
-print(new_wheel.wheel_id)
+new_wheel.analyze_wheel_id() 
+print(new_wheel.wheel_id)  # 1
+print(new_wheel.all_data)  # [9, 40, 0, 0, 0, 0, 0, 0, 207, 8, 2, 0, 0, 8, 13, 4, 0, 0, 6, 'W', 'h', 'e', 'e', 'l', 49, 6, 'O', 't', 't', 'a', 'w', 'a', 6, 'C', 'a', 'n', 'a', 'd', 'a', 45, 4, 1, 1, 1, 3, 9, 8, 2, 4, 8, 1, 5, 3, 5, 1, 200]
+new_wheel.analyze_regions()
+print(new_wheel.faulty_regions)  # [1]
