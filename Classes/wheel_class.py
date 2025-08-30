@@ -187,6 +187,22 @@ class WheelData:
             else:
                 self.faulty_regions.append(1)
                 self.valid_data = False
+
+
+    #  1. Iterate through all the regions and get their mini entries' locations (beginning and ending indexes)
+    #  2. Display the mini entries
+
+    def display_mini_entries(self):
+        """
+        Outputs all mini entries on a seperate line for clarity
+        """
+        for region in self.region_locations:
+            mini_entry_idxs = self.get_mini_entry_locations(region)
+            for mini_entry in mini_entry_idxs:
+                mini_entry_idx = mini_entry_idxs[mini_entry]
+                print(self.all_data[mini_entry_idx[0]:mini_entry_idx[1]])
+
+
             
             
 
@@ -209,6 +225,8 @@ new_wheel.analyze_regions()
 print(new_wheel.faulty_regions)  # [1]
 
 print(new_wheel.get_mini_entry_locations(1))  # {1: [10, 18], 2: [19, 25], 3: [26, 32], 4: [33, 39]} 
+
+new_wheel.display_mini_entries()
 
 
 
