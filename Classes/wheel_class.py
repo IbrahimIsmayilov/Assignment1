@@ -79,35 +79,78 @@ class WheelData:
             region_data = self.region_locations[region_name]
             if self.yield_checksum(self.all_data[region_data[0]:region_data[1]]) != True:
                 self.faulty_regions.append(region_name)
-
+        
         if len(self.faulty_regions) > 0:
             self.valid_data = False
 
 
-    #  1. Check if the wheel entry has the first region by only checking the first insertion in the dictionary. If so, continue. Else, the function ends there and nothing is updated
-    #  2. Store the first region's data in a new variable to avoid confusion
-    #  3. Find the second mini entry and check if the elements making up the word Wheel exist. If so, update the wheel id of the instance with the number proceeding. Else, Label first region as faulty by adding to the faulty regions list and update the validity of the instance accordingly
-    #  4. Also change the Wheel ID to its corresponding ASCII character by converting it to a string
+    #  1. Get first region's beginning and ending indexes
+    #  2. Get the second mini entry's beginning and ending indexes
+    #  3. Return the first region's and the second mini entry's beginning and ending indexes
 
     #  Time Complexity: O(1), Constant Time Complexity
-    def analyze_wheel_id(self): 
-        """
-        Get and store the id of the wheel component by analyzing first region. Replace the ASCII character wheel ID with its numeric value
-        """
-        first_key = next(iter(self.region_locations.keys()))
-
-        if first_key == 1:
+    def get_wheel_id_idx(self):
+            """
+            Get and return the first region and second mini entry's beginning and ending indexes
+            """
             region = self.region_locations[1]
             first_region_data = self.all_data[region[0]:region[1]]
             
             second_mini_entry_begin = first_region_data[0] + 1
             second_mini_entry_end = second_mini_entry_begin + first_region_data[second_mini_entry_begin] 
 
-            if first_region_data[second_mini_entry_begin + 1:second_mini_entry_end] == ['W', 'h', 'e', 'e', 'l']:
-                self.wheel_id = str(first_region_data[second_mini_entry_end])
-                wheel_id_idx = region[0] + second_mini_entry_end
-                self.all_data[wheel_id_idx] = ord(self.wheel_id)
-                
+            return first_region_data, second_mini_entry_begin, second_mini_entry_end
+    
+
+    #  1. Get the first key that was inserted in the dictionary which holds all regions' beginning and ending indexes
+    #  2. If that key is 1, return True as it proves that the entry does have a first region
+
+    #  Time Complexity: O(1), Constant Time Complexity
+    def check_first_region_existence(self):
+        """
+        Checks whether or not the entry has a first region
+        """
+        first_key = next(iter(self.region_locations.keys()))
+
+        if first_key == 1:
+            return True
+        
+
+    #  1. Change the Wheel ID's ASCII character to its corresponding numeric value by getting its index and altering the Wheel entry
+    
+    #  Time Complexity: O(1), Constant Time Complexity
+    def replace_wheel_id(self, second_mini_entry_end: int):
+        """
+        Replace the ASCII character of the wheel ID with its numeric value
+        """
+        wheel_id_idx = self.region_locations[1][0] + second_mini_entry_end
+        self.all_data[wheel_id_idx] = ord(self.wheel_id)
+
+    #  1. Check if the datagram contains the letters of Wheel in order and if so, update the wheel ID to match the value after
+    #  2. Return true to confirm the Wheel id's existence
+    def get_wheel_id(self, first_region_data, second_mini_entry_begin, second_mini_entry_end):
+        """
+        Checks the wheel id's existence and update the Wheel ID accordingly
+        """
+        if first_region_data[second_mini_entry_begin + 1:second_mini_entry_end] == ['W', 'h', 'e', 'e', 'l']:
+            self.wheel_id = str(first_region_data[second_mini_entry_end])
+            return True
+
+
+    #  1. Check if the wheel entry has the first region by calling a helper function that returns True if so
+    #  2. Get the indexes of the second mini entry and check for the wheel id's existence. If so, update and replace the wheel existence. Else, label the whole datagram and the first region as faulty, invalid data
+
+
+    #  Time Complexity: O(1), Constant Time Complexity
+    def analyze_wheel_id(self): 
+        """
+        Get and store the id of the wheel component by analyzing first region 
+        """
+        if self.check_first_region_existence() == True:
+            first_region_data, second_mini_entry_begin, second_mini_entry_end = self.get_wheel_id_idx()
+            wheel_exists = self.get_wheel_id(first_region_data, second_mini_entry_begin, second_mini_entry_end)
+            if wheel_exists == True:
+                self.replace_wheel_id(second_mini_entry_end)
             else:
                 self.faulty_regions.append(1)
                 self.valid_data = False
