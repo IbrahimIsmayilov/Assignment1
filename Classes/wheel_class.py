@@ -66,6 +66,34 @@ class WheelData:
                     self.region_locations[region_checked] = [self.header_data[idx], len(self.all_data)]  
 
 
+    #  1. Create an empty dictionary that hold the beginning and ending indexes of every mini entry in a region. Also create a list that will hold the data that corresponds to the region number given
+    #  2. Create beginning and ending variables that will continually change from mini entry to mini entry
+    #  3. Create a variable to keep track of which mini entry will be added to the dictionary. 
+    #  4. Iterate through the region on the condition that the mini entry's ending index is less than the region's last index. If it is, the datagram is definetely invalid and has been altered
+    #  5. While iterating, continually update both the beginning and ending variables, the current mini entry's number variable, and add to the dictionary accordingly
+    #  6. Return the dictionary
+
+    #  Time Complexity: O(N), where N equals the number of mini entries within a region. Linear time complexity
+    def get_mini_entry_locations(self, region_num: int) -> dict: 
+        """
+        Return all the mini entries' beginning and ending indexes in a dictionary
+        """
+        region = self.region_locations[region_num]
+        region_data = self.all_data[region[0]:region[1]]
+        mini_entry_locations = {}
+        mini_entry_begin = 0
+        mini_entry_end = 0
+        mini_entry_num = 0
+
+        while mini_entry_end <= len(region_data) - 2:
+            mini_entry_num += 1
+            mini_entry_end += (region_data[mini_entry_begin]) + 1
+            mini_entry_locations[mini_entry_num] = [region[0] + (mini_entry_begin + 1), region[0] + (mini_entry_end)]
+            mini_entry_begin = mini_entry_end
+            
+
+        return mini_entry_locations
+
     #  1. Iterate through all regions 
     #  2. If any region does not yield a checksum of 0, add it to the list property that tracks all invalid regions
     #  3. After iterating, if there were any invalid regions, change valid property of the datagram to False accordingly
@@ -155,23 +183,8 @@ class WheelData:
                 self.faulty_regions.append(1)
                 self.valid_data = False
 
-    
-    #  1. Create a mini entry begin and end variable to keep track of where is being iterated and shown to the user.
-    #  2. Iterate through all regions in the code with a loop
-    #  3. Print the mini entries on different lines for clarity. Continue this while the mini entry end variable does not clash with the ending index of the region
-    # def display_mini_entries(self): 
-    #     """
-    #     Iterate through all regions and display all mini entries on a seperate line for clarity
-    #     """
+            
 
-    #     mini_entry_begin_idx = 0
-    #     mini_entry_end_idx = 0
-
-
-    #     for region in self.region_locations:
-    #         region = self.region_locations[region]
-    #         mini_entry_begin_idx = region[0]
-    #         for mini_entry_elem_idx in range(mini):
             
             
 
@@ -192,6 +205,8 @@ print(new_wheel.wheel_id)  # 1
 print(new_wheel.all_data)  # [9, 40, 0, 0, 0, 0, 0, 0, 207, 8, 2, 0, 0, 8, 13, 4, 0, 0, 6, 'W', 'h', 'e', 'e', 'l', 49, 6, 'O', 't', 't', 'a', 'w', 'a', 6, 'C', 'a', 'n', 'a', 'd', 'a', 45, 4, 1, 1, 1, 3, 9, 8, 2, 4, 8, 1, 5, 3, 5, 1, 200]
 new_wheel.analyze_regions()
 print(new_wheel.faulty_regions)  # [1]
+
+print(new_wheel.get_mini_entry_locations(1))
 
 
 
