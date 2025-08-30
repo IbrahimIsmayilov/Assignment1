@@ -192,6 +192,7 @@ class WheelData:
     #  1. Iterate through all the regions and get their mini entries' locations (beginning and ending indexes)
     #  2. Display the mini entries
 
+    #  Time Complexity: O(N), where N equals the number of mini entries within a given datagram
     def display_mini_entries(self):
         """
         Outputs all mini entries on a seperate line for clarity
@@ -226,7 +227,12 @@ print(new_wheel.faulty_regions)  # [1]
 
 print(new_wheel.get_mini_entry_locations(1))  # {1: [10, 18], 2: [19, 25], 3: [26, 32], 4: [33, 39]} 
 
-new_wheel.display_mini_entries()
+new_wheel.display_mini_entries()  # [2, 0, 0, 8, 13, 4, 0, 0]
+                                  # ['W', 'h', 'e', 'e', 'l', 1]
+                                  # ['O', 't', 't', 'a', 'w', 'a']
+                                  # ['C', 'a', 'n', 'a', 'd', 'a']
+                                  # [1, 1, 1, 3]
+                                  # [8, 2, 4, 8, 1, 5, 3, 5, 1]
 
 
 
