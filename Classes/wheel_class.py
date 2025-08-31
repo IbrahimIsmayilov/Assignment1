@@ -1,21 +1,26 @@
 #  1. Create a wheel class from which a seperate instance will be created for each wheel datagram in the EEPROM entry. The wheel class must have properties like id and validity that will later be displayed to the user. To create an instance, the user only needs parsed data from an EEPROM entry
 #  2. Create methods that will be used for every wheel instance, like getting the checksum. They will be called in the main.py file for all instances of WheelData
 
-class WheelData:
-    def __init__(self, parsed_data: list):
+import entry_class
+
+class WheelData(entry_class.EntryDatagram): 
+    def __init__(self, parsed_data):
         """
         Intialize WheelData class with properties that should belong to all wheel datagrams
         """
-        self.all_data = parsed_data
+        entry_class.EntryDatagram.__init__(self, parsed_data)
+
+
         self.header_data = parsed_data[:self.all_data[0]]
 
         self.region_locations = {}
 
+        self.object_type = 'Wheel'
         self.wheel_id = 'No ID'
+        
 
         self.faulty_regions = []
 
-        self.valid_data = True
 
 
     #  1. Create a variable to keep track of the region's sum
@@ -205,7 +210,8 @@ class WheelData:
 
 
             
-            
+    def __str__(self):
+        pass
 
 
 
