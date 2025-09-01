@@ -168,14 +168,15 @@ class EEPROMCartridge:
 
 
     #  1. Iterate through all wheel objects
-    #  2. Return the string representation of all wheel objects
+    #  2. Print the mini entries and the string representation of all wheels
 
     #  Time Complexity: O(N), where N equals the number of wheel entries in the EEPROM cartridge
-    def return_str_all_wheels(self):
+    def display_all_wheels(self):
         """
         Returns the string representation of all wheel entries
         """ 
         for wheel_datagram in self.wheel_objects:
+            wheel_datagram.display_mini_entries()
             print(wheel_datagram)
             print('----------------------')
             

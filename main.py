@@ -32,7 +32,7 @@ def main():
         cartridge.analyze_all_wheels_ID()
         cartridge.analyze_all_wheels_regions()
         
-        cartridge.return_str_all_wheels()
+        cartridge.display_all_wheels()
 
 
 main()

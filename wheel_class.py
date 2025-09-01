@@ -193,8 +193,10 @@ class WheelDatagram(entry_class.EntryDatagram):
         """
         for region in self.region_locations:
             for mini_entry in self.mini_entry_locations[region]:
-                mini_entry_idx = self.mini_entry_locations[mini_entry]
+                mini_entry_idx = self.mini_entry_locations[region][mini_entry]
+                print()
                 print(self.all_data[mini_entry_idx[0]:mini_entry_idx[1]])
+                print()
 
 
     #  1. Get the first key that was inserted in the dictionary which holds all regions' beginning and ending indexes
