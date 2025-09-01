@@ -4,13 +4,13 @@
 import entry_class
 
 class WheelDatagram(entry_class.EntryDatagram): 
-    def __init__(self, parsed_data):
+    def __init__(self, entry_data):
         """
         Intialize WheelDatagram class with properties that should belong to all wheel datagrams
         """
-        entry_class.EntryDatagram.__init__(self, parsed_data)
+        entry_class.EntryDatagram.__init__(self, entry_data)
 
-        self.header_data = parsed_data[:self.all_data[0]]
+        self.header_data = entry_data[:self.all_data[0]]
 
         self.region_locations = {}
         self.mini_entry_locations = {}
