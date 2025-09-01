@@ -2,12 +2,14 @@
 #  The class will have properties, like different datagrams that occur in all cartridges regardless of whether it is a wheel object inside
 #  The class will have methods that create an instance of every object within the file, that identify each object, and so forth
 
-import entry_class
 import wheel_class
+import entry_class
+
+import sys
+import os
+sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 import file_parse
-
-
 
 class EEPROMCartridge:
     def __init__(self, filename):
@@ -52,7 +54,7 @@ class EEPROMCartridge:
 
 
     #  1. Iterate through all wheel objects
-    #  2. For all wheel objects, update their list of faulty regions with the arguement and declare their data to be not valid
+    #  2. For all wheel objects, update their list of faulty regions with the argument and declare their data to be not valid
 
     #  Time Complexity: O(N), where N equals the number of wheel entries in the EEPROM cartridge
     def declare_all_wheels_invalid(self, faulty_region: tuple):
@@ -89,7 +91,7 @@ class EEPROMCartridge:
 
 
     #  1. Iterate through all wheel objects
-    #  2. For all wheel objects, update details by calling function from the wheel class
+    #  2. For all wheel objects, update details by calling the helper funcs created for fetching details
 
     #  Time Complexity: O(N), where N equals the number of wheel entries in the EEPROM cartridge
     def get_all_wheels_details(self):
@@ -179,32 +181,3 @@ class EEPROMCartridge:
             wheel_datagram.display_mini_entries()
             print(wheel_datagram)
             print('----------------------')
-            
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-
-    
-
-
-
-    
-
-        
-
-
-

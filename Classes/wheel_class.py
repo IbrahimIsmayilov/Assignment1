@@ -90,14 +90,14 @@ class WheelDatagram(entry_class.EntryDatagram):
     #  1. Create an empty dictionary that hold the beginning and ending indexes of every mini entry in a region. Also create a list that will hold the data that corresponds to the region number given
     #  2. Create beginning and ending variables that will continually change from mini entry to mini entry
     #  3. Create a variable to keep track of which mini entry will be added to the dictionary. 
-    #  4. Iterate through the region on the condition that the mini entry's ending index is less than the region's last index. If it is, the datagram is definetely invalid and has been altered
+    #  4. Iterate through the region on the condition that the mini entry's ending index is less than the region's last index. If it is, the datagram is definitely invalid and has been altered
     #  5. While iterating, continually update both the beginning and ending variables, the current mini entry's number variable, and add to the dictionary accordingly
     #  6. Return the dictionary
 
     #  Time Complexity: O(N), where N equals the number of mini entries within a region. Linear time complexity
     def get_mini_entry_for_region(self, region_num: int) -> dict: 
         """
-        Return all the mini entries' beginning and ending indexes in a dictionary
+        Return all the mini entries' beginning and ending indexes in a region
         """
         region = self.region_locations[region_num]
         region_data = self.all_data[region[0]:region[1]]
@@ -114,6 +114,7 @@ class WheelDatagram(entry_class.EntryDatagram):
 
 
         return mini_entry_locations
+
 
     #  1. Iterate through every region in the entry
     #  2. Get the mini entries for each region and update the mini entries list accordingly
@@ -151,7 +152,7 @@ class WheelDatagram(entry_class.EntryDatagram):
     #  Time Complexity: O(N), where N equals the number of mini entries in region 1. Constant Time Complexity
     def get_wheel_id_idx(self) -> int:
             """
-            Get and return the first region and second mini entry's beginning and ending indexes
+            Get and return the second mini entry's ending index
             """            
             region1_mini_entries = self.mini_entry_locations[1]
             mini_entry2_idxs = region1_mini_entries[2]
@@ -170,6 +171,7 @@ class WheelDatagram(entry_class.EntryDatagram):
         wheel_id_idx = mini_entry2_end
         self.all_data[wheel_id_idx] = ord(self.wheel_id)
 
+
     #  1. Get the index of the second mini entry's end and get the wheel id's index in the parsed data
     #  2. Update and replace the wheel id
 
@@ -186,7 +188,7 @@ class WheelDatagram(entry_class.EntryDatagram):
     #  1. Iterate through all the regions and get their mini entries' locations (beginning and ending indexes)
     #  2. Display the mini entries
 
-    #  Time Complexity: O(N), where N equals the number of mini entries within a given datagram
+    #  Time Complexity: O(N), where N equals the number of mini entries within a given datagram. Linear time complexity
     def display_mini_entries(self):
         """
         Outputs all mini entries on a seperate line for clarity
@@ -199,9 +201,8 @@ class WheelDatagram(entry_class.EntryDatagram):
                 print()
 
 
-    #  1. Get the first key that was inserted in the dictionary which holds all regions' beginning and ending indexes
-    #  2. Get the second key that was inserted in the dictionary which holds all regions' beginning and ending indexes
-    #  3. If those keys are 1 and 2, do not update anything. Else, add them to the list of faulty region and label the datagram as invalid data
+    #  1. Check if the regions dictionary has the regions 1 and 2 as keys, validating their existence
+    #  3. If so, do not update anything. Else, add them to the list of faulty regions and label the datagram as invalid data
 
     #  Time Complexity: O(1), Constant Time Complexity
     def check_region1_2_existence(self):
@@ -233,7 +234,6 @@ class WheelDatagram(entry_class.EntryDatagram):
         self.city = self.all_data[city_idxs[0]:city_idxs[1]]
         self.country = self.all_data[country_idxs[0]:country_idxs[1]]
 
-
             
     #  1. Get the location of the mini entry that contains the part id
     #  2. Update the part id detail of the datagram accordingly
@@ -263,12 +263,3 @@ class WheelDatagram(entry_class.EntryDatagram):
                 message += f'\nRegion Number: {region_num}, reason: {reason}\n'
 
             return message
-
-
-
-
-
-
-
-
-    

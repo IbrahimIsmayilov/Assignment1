@@ -1,7 +1,8 @@
-#  Get as many files as the user would like to upload and convert them to EEPROM cartridge objects
+#  Get as many filenames as the user would like and convert them to EEPROM cartridge objects
 #  Once converted, analyze all entries for all EEPROM cartridges and display the messages regarding all entries
 
-import eeprom_class
+
+from Classes import eeprom_class
 
 def main():
     filename = input('Which file would you like to analyze?: ')
@@ -34,30 +35,4 @@ def main():
         
         cartridge.display_all_wheels()
 
-
 main()
-
-
-
-
-        
-
-        
-    
-    
-    
-
-
-
-        
-
-
-
-
-
-
-
-
-
-    
-
