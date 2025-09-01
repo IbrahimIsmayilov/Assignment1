@@ -1,5 +1,5 @@
-#  1. Create a wheel class from which a seperate instance will be created for each wheel datagram in the EEPROM entry. The wheel class must have properties like id and validity that will later be displayed to the user. Instances will be created only if an entry is a wheel object
-#  2. Create methods that will be used for every wheel instance, like getting the checksum. They will be called in the main.py file for all instances of WheelDatagram
+#  Create a wheel class from which a seperate instance will be created for each wheel datagram in the EEPROM entry. The wheel class must have properties like id and validity that will later be displayed to the user. Instances will be created only if an entry is a wheel object
+#  Create methods that will be used for every wheel instance, like getting the checksum. They will be called in the main.py file for all instances of WheelDatagram
 
 import entry_class
 
