@@ -228,7 +228,7 @@ class WheelDatagram(entry_class.EntryDatagram):
     #  1. Get the location of the mini entry that contains the part id
     #  2. Update the part id detail of the datagram accordingly
 
-    # Time Complexity: O(1), Constant time complexity
+    #  Time Complexity: O(1), Constant time complexity
     def get_part_id(self):
         """
         Get and update the part id detail of the wheel datagram
@@ -237,8 +237,10 @@ class WheelDatagram(entry_class.EntryDatagram):
         self.part_id = self.all_data[part_id_idxs[0]:part_id_idxs[1]]
 
 
-    #  1. Return a message to the user based
-            
+    #  1. Return a message to the user based on whether or not the datagram is a valid piece of data
+    #  2. If the datagram is invalid, return the region and the errors regarding each region
+    
+    #  Time Complexity: O(N), where N equals the number of errors that prove the datagram to be invalid. Linear time complexity
     def __str__(self):
         if self.valid_data == True:
             message = 'Yes, a valid wheel entry datagram.'
