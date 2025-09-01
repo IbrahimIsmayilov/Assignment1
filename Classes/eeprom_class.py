@@ -15,6 +15,7 @@ class EEPROMCartridge:
         self.raw_data = file_parse.read_file(filename)
         self.parsed_data = file_parse.parse_file(self.raw_data)
         self.all_objects = []
+        self.wheel_objects = []
 
     #  1. Iterate through the entire dataset 
     #  2. If the elements making up the word Wheel are encountered, return True. Else, return False. 
@@ -35,6 +36,7 @@ class EEPROMCartridge:
         """
         if self.check_if_wheel(parsed_data) == True:
             self.all_objects.append(wheel_class.WheelDatagram(parsed_data))
+            self.wheel_objects.append(wheel_class.WheelDatagram(parsed_data))
         else:
             self.all_objects.append(entry_class.EntryDatagram)
 
