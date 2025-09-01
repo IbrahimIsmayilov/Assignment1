@@ -42,15 +42,16 @@ class EEPROMCartridge:
 
 
     #  1. Iterate through all wheel objects
-    #  2. For all wheel objects, update details by checking if every wheel object has a first and second region
+    #  2. For all wheel objects, update their list of faulty regions with the arguement and declare their data to be not valid
 
     #  Time Complexity: O(N), where N equals the number of wheel entries in the EEPROM cartridge
-    def check_all_wheel_region1_2s(self):
+    def declare_all_wheels_invalid(self, faulty_region: tuple):
         """
         Checks whether or not each wheel entry has a first and second region
         """ 
         for wheel_datagram in self.wheel_objects:
-            wheel_datagram.check_region1_2_existence()
+            wheel_datagram.faulty_regions.append(faulty_region)
+            wheel_datagram.valid_data = False
 
 
     #  1. Iterate through all wheel objects
@@ -103,15 +104,23 @@ class EEPROMCartridge:
 
 
     #  1. Iterate through all wheel objects
-    #  2. Check if 
+    #  2. Check if all wheel objects have the same manufacturing details by comparing all 3 details from wheel to wheel
 
     #  Time Complexity: O(N), where N equals the number of wheel entries in the EEPROM cartridge
     def check_all_wheel_region1_2s(self):
         """
         Checks whether or not each wheel entry has a first and second region
         """ 
-        for wheel_datagram in self.wheel_objects:
-            wheel_datagram.check_region1_2_existence()
+        for idx in range(len(self.wheel_objects) - 1):
+            if self.wheel_objects[idx].date != self.wheel_objects[idx + 1].date:
+                self.declare_all_wheels_invalid((1), "Date is not the same for all wheels")
+            if self.wheel_objects[idx].city != self.wheel_objects[idx + 1].city:
+                self.declare_all_wheels_invalid((1), "City is not the same for all wheels")
+            if self.wheel_objects[idx].country != self.wheel_objects[idx + 1].country:
+                self.declare_all_wheels_invalid((1), "Country is not the same for all wheels")
+            
+
+
 
 
 
