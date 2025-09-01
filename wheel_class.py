@@ -50,7 +50,7 @@ class WheelDatagram(entry_class.EntryDatagram):
     
     #  Time Complexity: O(N), where N is the length of the header section's contents in the wheel entry. Linear Time Complexity
     def analyze_header(self): 
-        """"
+        """
         Check if the header yields a checksum of 0. If it is valid data, check further and assign beginning and ending indexes of every region
         """
         if self.yield_checksum(self.header_data) == False:
@@ -87,34 +87,45 @@ class WheelDatagram(entry_class.EntryDatagram):
                     self.region_locations[region_checked] = [self.header_data[idx], len(self.all_data)]  
 
 
-    #  1. Iterate through every region in the entry
+    #  1. Create an empty dictionary that hold the beginning and ending indexes of every mini entry in a region. Also create a list that will hold the data that corresponds to the region number given
     #  2. Create beginning and ending variables that will continually change from mini entry to mini entry
-    #  3. Create a variable to keep track of which mini entry will be added to the dictionary
+    #  3. Create a variable to keep track of which mini entry will be added to the dictionary. 
     #  4. Iterate through the region on the condition that the mini entry's ending index is less than the region's last index. If it is, the datagram is definetely invalid and has been altered
-    #  5. While iterating, continually update both the beginning and ending variables, the current mini entry's number variable, and add to the mini entries dictionary accordingly
+    #  5. While iterating, continually update both the beginning and ending variables, the current mini entry's number variable, and add to the dictionary accordingly
+    #  6. Return the dictionary
+
+    #  Time Complexity: O(N), where N equals the number of mini entries within a region. Linear time complexity
+    def get_mini_entry_for_region(self, region_num: int) -> dict: 
+        """
+        Return all the mini entries' beginning and ending indexes in a dictionary
+        """
+        region = self.region_locations[region_num]
+        region_data = self.all_data[region[0]:region[1]]
+        mini_entry_locations = {}
+        mini_entry_begin = 0
+        mini_entry_end = 0
+        mini_entry_num = 0
+
+        while mini_entry_end <= len(region_data) - 2:
+            mini_entry_num += 1
+            mini_entry_end += (region_data[mini_entry_begin]) + 1
+            mini_entry_locations[mini_entry_num] = [region[0] + (mini_entry_begin + 1), region[0] + (mini_entry_end)]
+            mini_entry_begin = mini_entry_end
+
+
+        return mini_entry_locations
+
+    #  1. Iterate through every region in the entry
+    #  2. Get the mini entries for each region and update the mini entries list accordingly
 
     #  Time Complexity: O(N), where N equals the number of mini entries within the wheel datagram. Linear time complexity
     def get_mini_entry_locations(self) -> dict: 
         """
-        Return all the mini entries' beginning and ending indexes in a wheel entry
+        Update all the mini entries' beginning and ending indexes in a wheel entry
         """
-        for region_num in range(len(self.region_locations)):
-            region_num += 1
-            region = self.region_locations[region_num]
-            region_data = self.all_data[region[0]:region[1]]
-
-            mini_entry_begin = 0
-            mini_entry_end = 0
-            mini_entry_num = 0
-
-            while mini_entry_end <= len(region_data) - 2:
-                mini_entry_num += 1
-                mini_entry_end += (region_data[mini_entry_begin]) + 1
-                self.mini_entry_locations[region_num][mini_entry_num] = [region[0] + (mini_entry_begin + 1), region[0] + (mini_entry_end)]
-                mini_entry_begin = mini_entry_end
-            else:
-                self.faulty_regions.append((region_num, "Mini entry layout is inaccurate"))
-                self.check_validity()
+        for region_num in self.region_locations:
+            mini_entry_dict = self.get_mini_entry_for_region(region_num)
+            self.mini_entry_locations[region_num] = mini_entry_dict
             
 
     #  1. Iterate through all regions 
@@ -132,7 +143,6 @@ class WheelDatagram(entry_class.EntryDatagram):
                 self.faulty_regions.append((region_name, "Wrong Checksum"))
         
         self.check_validity()
-
 
 
     #  1. Get the second mini entry's beginning and ending indexes
@@ -157,7 +167,7 @@ class WheelDatagram(entry_class.EntryDatagram):
         """
         Replace the ASCII character of the wheel ID with its numeric value
         """
-        wheel_id_idx = mini_entry2_end - 1
+        wheel_id_idx = mini_entry2_end
         self.all_data[wheel_id_idx] = ord(self.wheel_id)
 
     #  1. Get the index of the second mini entry's end and get the wheel id's index in the parsed data
@@ -168,8 +178,9 @@ class WheelDatagram(entry_class.EntryDatagram):
         """
         Store and replace the id of the wheel component by analyzing first region 
         """
-        mini_entry2_end = self.get_wheel_id_idx() - 1
-        self.replace_wheel_id(mini_entry2_end)
+        wheel_id_idx = self.get_wheel_id_idx() - 1
+        self.wheel_id = str(self.all_data[wheel_id_idx])
+        self.replace_wheel_id(wheel_id_idx)
 
 
     #  1. Iterate through all the regions and get their mini entries' locations (beginning and ending indexes)
@@ -195,13 +206,10 @@ class WheelDatagram(entry_class.EntryDatagram):
         """
         Checks whether or not the entry has a first and second region
         """
-        first_key = next(iter(self.region_locations.keys()))
-        second_key = next(iter(self.region_locations.keys()))
-
-        if first_key != 1:
+        if 1 not in self.region_locations:
             self.faulty_regions.append((1, "First region does not exist"))
         
-        if second_key != 2:
+        if 2 not in self.region_locations:
             self.faulty_regions.append((2, "Second region does not exist"))
 
         self.check_validity()
@@ -243,14 +251,14 @@ class WheelDatagram(entry_class.EntryDatagram):
     #  Time Complexity: O(N), where N equals the number of errors that prove the datagram to be invalid. Linear time complexity
     def __str__(self):
         if self.valid_data == True:
-            message = 'Yes, a valid wheel entry datagram.'
+            message = '\nYes, a valid wheel entry datagram.\n'
             return message
         else:
-            message = "No, here are the regions and the errors found within that proved it to be an invalid piece of data.\n"
+            message = "\nNo, here are the regions and the errors found within that proved it to be an invalid piece of data.\n"
             for faulty_region in self.faulty_regions:
                 region_num = faulty_region[0]
                 reason = faulty_region[1]
-                message += f'Region Number: {region_num}, reason: {reason}\n'
+                message += f'\nRegion Number: {region_num}, reason: {reason}\n'
 
             return message
 

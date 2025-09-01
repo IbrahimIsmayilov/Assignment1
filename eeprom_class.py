@@ -38,11 +38,11 @@ class EEPROMCartridge:
     #  3. If it is a wheel, add it to both the list of wheels and objects. Else, only add it to the list of entries
 
     #  Time Complexity: O(N), where N equals the number of entries in the EEPROM Cartridge. Linear time complexity
-    def get_objects(self, parsed_data: list) -> str:
+    def get_objects(self,) -> str:
         """
         Updates the list of entries and wheel entries by checking if each entry is a wheel object
         """
-        for entry_data in parsed_data:
+        for entry_data in self.parsed_data:
             if self.check_if_wheel(entry_data) == True:
                 wheel_object = wheel_class.WheelDatagram(entry_data)
                 self.all_objects.append(wheel_object)
@@ -102,6 +102,18 @@ class EEPROMCartridge:
 
 
     #  1. Iterate through all wheel objects
+    #  2. For all wheel objects, analyze all regions and their checksums
+
+    #  Time Complexity: O(N), where N equals the number of wheel entries in the EEPROM cartridge
+    def analyze_all_wheels_regions(self):
+        """
+        Checks whether or not each region in the wheel entry yields a checksum value of 0
+        """ 
+        for wheel_datagram in self.wheel_objects:
+            wheel_datagram.analyze_regions()
+
+
+    #  1. Iterate through all wheel objects
     #  2. For all wheel objects, update details by checking if every wheel object has a first and second region
 
     #  Time Complexity: O(N), where N equals the number of wheel entries in the EEPROM cartridge
@@ -147,7 +159,7 @@ class EEPROMCartridge:
     #  2. Get the wheel ids of all wheel objects and have them converted to their corresponding numeric character
 
     #  Time Complexity: O(N), where N equals the number of wheel entries in the EEPROM cartridge
-    def analyze_all_wheel_wheels_ID(self):
+    def analyze_all_wheels_ID(self):
         """
         Updates and replaces the wheel id for all wheel objects
         """ 
@@ -159,13 +171,13 @@ class EEPROMCartridge:
     #  2. Return the string representation of all wheel objects
 
     #  Time Complexity: O(N), where N equals the number of wheel entries in the EEPROM cartridge
-    def analyze_all_wheel_wheels_ID(self):
+    def return_str_all_wheels(self):
         """
         Returns the string representation of all wheel entries
         """ 
         for wheel_datagram in self.wheel_objects:
             print(wheel_datagram)
-            print('\n-----------------------\n')
+            print('----------------------')
             
     
 
