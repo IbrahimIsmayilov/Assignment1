@@ -4,4 +4,4 @@ class EntryDatagram:
     def __init__(self, parsed_data):
         self.all_data = parsed_data
         self.valid_data = True
-        self.object_type = 'UnidentifiedObject'
+        self.object_type = 'Unidentified Object'
