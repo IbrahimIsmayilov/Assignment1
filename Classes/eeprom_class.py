@@ -118,10 +118,32 @@ class EEPROMCartridge:
                 self.declare_all_wheels_invalid((1), "City is not the same for all wheels")
             if self.wheel_objects[idx].country != self.wheel_objects[idx + 1].country:
                 self.declare_all_wheels_invalid((1), "Country is not the same for all wheels")
-            
 
 
+    #  1. Iterate through all wheel objects
+    #  2. Check if all wheel objects have the same part id by comparing it from wheel to wheel
 
+    #  Time Complexity: O(N), where N equals the number of wheel entries in the EEPROM cartridge
+    def check_all_wheel_region1_2s(self):
+        """
+        Checks whether or not each wheel entry has a first and second region
+        """ 
+        for idx in range(len(self.wheel_objects) - 1):
+            if self.wheel_objects[idx].part_id != self.wheel_objects[idx + 1].part_id:
+                self.declare_all_wheels_invalid((w), "Part ID is not the same for all wheels")
+
+
+#  1. Iterate through all wheel objects
+#  2. Check if all wheel objects have the same part id by comparing it from wheel to wheel
+
+#  Time Complexity: O(N), where N equals the number of wheel entries in the EEPROM cartridge
+def check_all_wheel_region1_2s(self):
+    """
+    Checks whether or not each wheel entry has a first and second region
+    """ 
+    for idx in range(len(self.wheel_objects) - 1):
+        if self.wheel_objects[idx].part_id != self.wheel_objects[idx + 1].part_id:
+            self.declare_all_wheels_invalid((w), "Part ID is not the same for all wheels")
 
 
 
